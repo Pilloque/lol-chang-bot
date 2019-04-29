@@ -1,0 +1,14 @@
+{
+  "name": "lolchang",
+  "version": "1.0.0",
+  "description": "discord bot for league of legends players",
+  "main": "lolchang.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "PinkMuscle",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^11.4.2"
+  }
+}
