@@ -36,7 +36,7 @@ client.on("message", (message) => {
     }
 
     //Arguments
-    if (command.args && !args.length) {  // args를 boolean 대신 number을 쓰면? cmd.args.len === args.len
+    if (command.args && !args.length) {
         let reply = `You didn't provide any arguments, ${message.author}!`;
 
         if (command.usage) {

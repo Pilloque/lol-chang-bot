@@ -4,7 +4,7 @@ module.exports = {
     aliases: ["핑"],
     //usage: undefined,
     cooldown: 5,
-    //guildOnly: false,
+    //guildOnly: true,
     //args: false,
     execute(message, args) {
         message.channel.send("Pong.");
