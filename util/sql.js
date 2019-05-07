@@ -1,5 +1,5 @@
 const mysql = require("mysql")
-const dblogin = require("./tokens/dblogin.json");
+const dblogin = require("../tokens/dblogin.json");
 
 const db = mysql.createConnection({
 	host: dblogin.host,

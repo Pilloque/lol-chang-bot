@@ -32,15 +32,15 @@ client.on("message", (message) => {
 
     //Guild only
     if (command.guildOnly && message.channel.type !== "text") {
-        return message.reply("I can't execute that command inside DMs!")
+        return message.reply("DM에선 몬함")
     }
 
     //Arguments
-    if (command.args && !args.length) {
-        let reply = `You didn't provide any arguments, ${message.author}!`;
+    if (command.args && args.length < command.args) {
+        let reply = `명령어그렇게쓰는거아닌데`;
 
         if (command.usage) {
-            reply += `\nThe proper usage would be: \'${prefix}${commandName} ${command.usage}\'`;
+            reply += `\n올바른 사용법: \'${prefix}${commandName} ${command.usage}\'`;
         }
 
         return message.channel.send(reply);
@@ -60,7 +60,7 @@ client.on("message", (message) => {
 
         if (now < expirationTime) {
             const timeLeft = (expirationTime - now) / 1000;
-            return message.reply(`please wait ${timeLeft.toFixed(1)} more second(s) before reusing the \'${command.name}\' command.`);
+            return message.reply(`쿨이여서몼씀. ${timeLeft.toFixed(1)}초기달.`);
         }
     }
 
@@ -72,7 +72,7 @@ client.on("message", (message) => {
         command.execute(message, args);
     } catch (error) {
         console.error(error);
-        message.reply("there was an error trying to execute that command!");
+        message.reply("에러 발생");
     }
 });
 
