@@ -20,14 +20,14 @@ module.exports = {
                 return message.reply(`${nickname}는 누군지몰르겠는거임 똑바로치셈`);
             }
 
-            db.query(`SELECT lol_id FROM lolchang.includes WHERE lol_id = '${body.id}' AND guild_id = ${message.guild.id};`, (error, results, fields) => {
+            db.query(`SELECT lol_id FROM lolchang.includes WHERE lol_id = '${body.accountId}' AND guild_id = ${message.guild.id};`, (error, results, fields) => {
                 if (error) return console.log(error);
 
                 if (!results.length) {
                     return message.reply(`없어서삭제몬하겟슴`);
                 }
 
-                db.query(`DELETE FROM lolchang.includes WHERE lol_id = '${body.id}' AND guild_id = ${message.guild.id};`, (error, results, fields) => {
+                db.query(`DELETE FROM lolchang.includes WHERE lol_id = '${body.accountId}' AND guild_id = ${message.guild.id};`, (error, results, fields) => {
                     if (error) return console.log(error);
                     message.channel.send(`\'${message.guild.name}\'에서 \'${nickname}\' 삭제 완료`);
                 });

@@ -24,7 +24,7 @@ module.exports = {
             request(url, { json: true }, (error, response, primaryJson) => {
                 if (error) return console.log(error);
 
-                if (!primaryJson.id) {
+                if (!primaryJson.accountId) {
                     return message.reply(`${primaryNickname}는 누군지몰르겠는거임 똑바로치셈`);
                 }
 
@@ -33,26 +33,26 @@ module.exports = {
                 request(url, { json: true }, (error, response, secondaryJson) => {
                     if (error) return console.log(error);
 
-                    if (!secondaryJson.id) {
+                    if (!secondaryJson.accountId) {
                         return message.reply(`${secondaryNickname}는 누군지몰르겠는거임 똑바로치셈`);
                     }
 
                     //Queries
-                    db.query(`SELECT lol_id FROM lolchang.includes WHERE lol_id = '${primaryJson.id}' AND guild_id = ${message.guild.id};`, (error, results, fields) => {
+                    db.query(`SELECT lol_id FROM lolchang.includes WHERE lol_id = '${primaryJson.accountId}' AND guild_id = ${message.guild.id};`, (error, results, fields) => {
                         if (error) return console.log(error);
 
                         if (!results.length) {
                             return message.reply(`본캐등록부터해야함 띵킹좀하셈`);
                         }
 
-                        db.query(`SELECT primary_id FROM lolchang.subaccounts WHERE primary_id = '${primaryJson.id}' AND secondary_id = '${secondaryJson.id}' AND guild_id = ${message.guild.id};`, (error, results, fields) => {
+                        db.query(`SELECT primary_id FROM lolchang.subaccounts WHERE primary_id = '${primaryJson.accountId}' AND secondary_id = '${secondaryJson.accountId}' AND guild_id = ${message.guild.id};`, (error, results, fields) => {
                             if (error) return console.log(error);
 
                             if (results.length) {
                                 return message.reply(`이미등록댄거임 띵킹좀하셈`);
                             }
 
-                            db.query(`INSERT INTO lolchang.subaccounts VALUES ('${primaryJson.id}', '${secondaryJson.id}', ${message.guild.id}, '${secondaryJson.name}');`, (error, results, fields) => {
+                            db.query(`INSERT INTO lolchang.subaccounts VALUES ('${primaryJson.accountId}', '${secondaryJson.accountId}', ${message.guild.id}, '${secondaryJson.name}');`, (error, results, fields) => {
                                 if (error) return console.log(error);
                                 message.channel.send(`\'${primaryNickname}\'에 \'${secondaryNickname}\' 등록 완료`);
                             });
@@ -75,7 +75,7 @@ module.exports = {
             request(url, { json: true }, (error, response, primaryJson) => {
                 if (error) return console.log(error);
 
-                if (!primaryJson.id) {
+                if (!primaryJson.accountId) {
                     return message.reply(`${primaryNickname}는 누군지몰르겠는거임 똑바로치셈`);
                 }
 
@@ -84,26 +84,26 @@ module.exports = {
                 request(url, { json: true }, (error, response, secondaryJson) => {
                     if (error) return console.log(error);
 
-                    if (!secondaryJson.id) {
+                    if (!secondaryJson.accountId) {
                         return message.reply(`${secondaryNickname}는 누군지몰르겠는거임 똑바로치셈`);
                     }
 
                     //Queries
-                    db.query(`SELECT lol_id FROM lolchang.includes WHERE lol_id = '${primaryJson.id}' AND guild_id = ${message.guild.id};`, (error, results, fields) => {
+                    db.query(`SELECT lol_id FROM lolchang.includes WHERE lol_id = '${primaryJson.accountId}' AND guild_id = ${message.guild.id};`, (error, results, fields) => {
                         if (error) return console.log(error);
 
                         if (!results.length) {
                             return message.reply(`본캐등록부터해야함 띵킹좀하셈`);
                         }
 
-                        db.query(`SELECT primary_id FROM lolchang.subaccounts WHERE primary_id = '${primaryJson.id}' AND secondary_id = '${secondaryJson.id}' AND guild_id = ${message.guild.id};`, (error, results, fields) => {
+                        db.query(`SELECT primary_id FROM lolchang.subaccounts WHERE primary_id = '${primaryJson.accountId}' AND secondary_id = '${secondaryJson.accountId}' AND guild_id = ${message.guild.id};`, (error, results, fields) => {
                             if (error) return console.log(error);
 
                             if (!results.length) {
                                 return message.reply(`없어서삭제몬하겟슴`);
                             }
 
-                            db.query(`DELETE FROM lolchang.subaccounts WHERE primary_id = '${primaryJson.id}' AND secondary_id = '${secondaryJson.id}' AND guild_id = ${message.guild.id};`, (error, results, fields) => {
+                            db.query(`DELETE FROM lolchang.subaccounts WHERE primary_id = '${primaryJson.accountId}' AND secondary_id = '${secondaryJson.accountId}' AND guild_id = ${message.guild.id};`, (error, results, fields) => {
                                 if (error) return console.log(error);
                                 message.channel.send(`\'${primaryNickname}\'에서 \'${secondaryNickname}\' 삭제 완료`);
                             });
@@ -128,7 +128,7 @@ module.exports = {
                     return message.reply(`${nickname}는 누군지몰르겠는거임 똑바로치셈`);
                 }
 
-                db.query(`SELECT secondary_name FROM lolchang.subaccounts WHERE primary_id = '${body.id}' AND guild_id = ${message.guild.id};`, (error, results, fields) => {
+                db.query(`SELECT secondary_name FROM lolchang.subaccounts WHERE primary_id = '${body.accountId}' AND guild_id = ${message.guild.id};`, (error, results, fields) => {
                     if (error) return console.log(error);
 
                     if (!results.length) {

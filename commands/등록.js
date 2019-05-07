@@ -32,11 +32,11 @@ module.exports = {
                 return message.reply(`${nickname}는 누군지몰르겠는거임 똑바로치셈`);
             }
 
-            db.query(`SELECT lol_id FROM lolchang.members WHERE lol_id = '${body.id}';`, (error, results, fields) => {
+            db.query(`SELECT lol_id FROM lolchang.members WHERE lol_id = '${body.accountId}';`, (error, results, fields) => {
                 if (error) return console.log(error);
 
                 if (!results.length) {
-                    db.query(`INSERT INTO lolchang.members VALUES ('${body.id}', '${body.name}', ${body.summonerLevel});`, (error, results, fields) => {
+                    db.query(`INSERT INTO lolchang.members VALUES ('${body.accountId}', '${body.name}', ${body.summonerLevel});`, (error, results, fields) => {
                         if (error) return console.log(error);
 
                         console.log(`소환사 \'${body.name}\' 추가됨`);
@@ -44,14 +44,14 @@ module.exports = {
                 }
             });
 
-            db.query(`SELECT lol_id FROM lolchang.includes WHERE lol_id = '${body.id}' AND guild_id = ${message.guild.id};`, (error, results, fields) => {
+            db.query(`SELECT lol_id FROM lolchang.includes WHERE lol_id = '${body.accountId}' AND guild_id = ${message.guild.id};`, (error, results, fields) => {
                 if (error) return console.log(error);
 
                 if (results.length) {
                     return message.reply(`이미등록댄거임 띵킹좀하셈`);
                 }
 
-                db.query(`INSERT INTO lolchang.includes VALUES (${message.guild.id}, '${body.id}');`, (error, results, fields) => {
+                db.query(`INSERT INTO lolchang.includes VALUES (${message.guild.id}, '${body.accountId}');`, (error, results, fields) => {
                     if (error) return console.log(error);
                     message.channel.send(`\'${message.guild.name}\'에 \'${nickname}\' 등록 완료`);
                 });
