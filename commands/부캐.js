@@ -52,9 +52,21 @@ module.exports = {
                                 return message.reply(`이미등록댄거임 띵킹좀하셈`);
                             }
 
-                            db.query(`INSERT INTO lolchang.subaccounts VALUES ('${primaryJson.accountId}', '${secondaryJson.accountId}', ${message.guild.id}, '${secondaryJson.name}');`, (error, results, fields) => {
+                            db.query(`SELECT lol_id FROM lolchang.members WHERE lol_id = '${secondaryJson.accountId}';`, (error, results, fields) => {
                                 if (error) return console.log(error);
-                                message.channel.send(`\'${primaryJson.name}\'에 \'${secondaryJson.name}\' 등록 완료`);
+
+                                if (!results.length) {
+                                    db.query(`INSERT INTO lolchang.members VALUES ('${secondaryJson.accountId}', '${secondaryJson.name}', ${secondaryJson.summonerLevel});`, (error, results, fields) => {
+                                        if (error) return console.log(error);
+
+                                        console.log(`소환사 \'${secondaryJson.name}\' 추가됨`);
+                                    });
+                                }
+
+                                db.query(`INSERT INTO lolchang.subaccounts VALUES ('${primaryJson.accountId}', '${secondaryJson.accountId}', ${message.guild.id});`, (error, results, fields) => {
+                                    if (error) return console.log(error);
+                                    message.channel.send(`\'${primaryJson.name}\'에 \'${secondaryJson.name}\' 등록 완료`);
+                                });
                             });
                         });
                     });
@@ -102,7 +114,7 @@ module.exports = {
                             if (!results.length) {
                                 return message.reply(`없어서삭제몬하겟슴`);
                             }
-                            
+
                             const tempPrimaryNickname = primaryJson.name;
                             const tempSecondaryNickname = secondaryJson.name;
 
