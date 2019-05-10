@@ -27,9 +27,11 @@ module.exports = {
                     return message.reply(`없어서삭제몬하겟슴`);
                 }
 
+                const tempNickname = body.name;
+
                 db.query(`DELETE FROM lolchang.includes WHERE lol_id = '${body.accountId}' AND guild_id = ${message.guild.id};`, (error, results, fields) => {
                     if (error) return console.log(error);
-                    message.channel.send(`\'${message.guild.name}\'에서 \'${nickname}\' 삭제 완료`);
+                    message.channel.send(`\'${message.guild.name}\'에서 \'${tempNickname}\' 삭제 완료`);
                 });
             });
         });

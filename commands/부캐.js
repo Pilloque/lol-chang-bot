@@ -54,7 +54,7 @@ module.exports = {
 
                             db.query(`INSERT INTO lolchang.subaccounts VALUES ('${primaryJson.accountId}', '${secondaryJson.accountId}', ${message.guild.id}, '${secondaryJson.name}');`, (error, results, fields) => {
                                 if (error) return console.log(error);
-                                message.channel.send(`\'${primaryNickname}\'에 \'${secondaryNickname}\' 등록 완료`);
+                                message.channel.send(`\'${primaryJson.name}\'에 \'${secondaryJson.name}\' 등록 완료`);
                             });
                         });
                     });
@@ -102,10 +102,13 @@ module.exports = {
                             if (!results.length) {
                                 return message.reply(`없어서삭제몬하겟슴`);
                             }
+                            
+                            const tempPrimaryNickname = primaryJson.name;
+                            const tempSecondaryNickname = secondaryJson.name;
 
                             db.query(`DELETE FROM lolchang.subaccounts WHERE primary_id = '${primaryJson.accountId}' AND secondary_id = '${secondaryJson.accountId}' AND guild_id = ${message.guild.id};`, (error, results, fields) => {
                                 if (error) return console.log(error);
-                                message.channel.send(`\'${primaryNickname}\'에서 \'${secondaryNickname}\' 삭제 완료`);
+                                message.channel.send(`\'${tempPrimaryNickname}\'에서 \'${tempSecondaryNickname}\' 삭제 완료`);
                             });
                         });
                     });

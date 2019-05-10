@@ -53,7 +53,7 @@ module.exports = {
 
                 db.query(`INSERT INTO lolchang.includes VALUES (${message.guild.id}, '${body.accountId}');`, (error, results, fields) => {
                     if (error) return console.log(error);
-                    message.channel.send(`\'${message.guild.name}\'에 \'${nickname}\' 등록 완료`);
+                    message.channel.send(`\'${message.guild.name}\'에 \'${body.name}\' 등록 완료`);
                 });
             });
         });
