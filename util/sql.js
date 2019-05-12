@@ -6,6 +6,8 @@ const db = mysql.createConnection({
 	user: dblogin.user,
 	password: dblogin.password,
 	database: dblogin.database,
+	supportBigNumbers: true,
+	bigNumberStrings: true,
 });
 
 db.connect(err => {

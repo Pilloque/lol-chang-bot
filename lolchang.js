@@ -3,6 +3,8 @@ const Discord = require("discord.js");
 const { prefix, token } = require("./tokens/config.json");
 
 const client = new Discord.Client();
+exports.client = client;
+
 client.commands = new Discord.Collection();
 const cooldowns = new Discord.Collection();
 
