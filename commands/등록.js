@@ -32,11 +32,11 @@ module.exports = {
                 return message.reply(`${nickname}는 누군지몰르겠는거임 똑바로치셈`);
             }
 
-            db.query(`SELECT lol_id FROM lolchang.members WHERE lol_id = '${body.accountId}';`, (error, results, fields) => {
+            db.query(`SELECT lol_id FROM lolchang.accounts WHERE lol_id = '${body.accountId}';`, (error, results, fields) => {
                 if (error) return console.log(error);
 
                 if (!results.length) {
-                    db.query(`INSERT INTO lolchang.members VALUES ('${body.accountId}', '${body.name}', ${body.summonerLevel});`, (error, results, fields) => {
+                    db.query(`INSERT INTO lolchang.accounts VALUES ('${body.accountId}', '${body.name}', ${body.summonerLevel});`, (error, results, fields) => {
                         if (error) return console.log(error);
 
                         console.log(`소환사 \'${body.name}\' 추가됨`);

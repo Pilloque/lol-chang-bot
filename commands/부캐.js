@@ -52,11 +52,11 @@ module.exports = {
                                 return message.reply(`이미등록댄거임 띵킹좀하셈`);
                             }
 
-                            db.query(`SELECT lol_id FROM lolchang.members WHERE lol_id = '${secondaryJson.accountId}';`, (error, results, fields) => {
+                            db.query(`SELECT lol_id FROM lolchang.accounts WHERE lol_id = '${secondaryJson.accountId}';`, (error, results, fields) => {
                                 if (error) return console.log(error);
 
                                 if (!results.length) {
-                                    db.query(`INSERT INTO lolchang.members VALUES ('${secondaryJson.accountId}', '${secondaryJson.name}', ${secondaryJson.summonerLevel});`, (error, results, fields) => {
+                                    db.query(`INSERT INTO lolchang.accounts VALUES ('${secondaryJson.accountId}', '${secondaryJson.name}', ${secondaryJson.summonerLevel});`, (error, results, fields) => {
                                         if (error) return console.log(error);
 
                                         console.log(`소환사 \'${secondaryJson.name}\' 추가됨`);

@@ -7,7 +7,7 @@ module.exports = {
     cooldown: 5,
     guildOnly: true,
     execute(message, args) {
-        db.query(`SELECT M.nickname FROM lolchang.includes I, lolchang.members M WHERE guild_id = ${message.guild.id} AND M.lol_id = I.lol_id;`, (error, results, fields) => {
+        db.query(`SELECT A.nickname FROM lolchang.includes I, lolchang.accounts A WHERE guild_id = ${message.guild.id} AND A.lol_id = I.lol_id;`, (error, results, fields) => {
             if (error) return console.log(error);
 
             if (!results.length) {
