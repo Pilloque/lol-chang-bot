@@ -1,0 +1,151 @@
+const { db, querySync } = require("./sql.js");
+const { riotapi } = require("../tokens/config.json");
+const { client } = require("../lolchang.js");
+const reader = require("./weekReader.js");
+const request = require("request");
+
+module.exports = async function weekly() {
+    if (reader.get("workingState") === 0 && Date.now() > reader.get("nextWeek")) {
+        reader.set("workingState", 1);
+
+        const startTime = Date.now();
+        console.log("데이터 집계 시작");
+        await insertWeeks();
+        console.log(`데이터 삽입 완료 (${((Date.now() - startTime) / 1000).toFixed(2)}초)`);
+        await printWeeks();
+
+        reader.set("currentWeekID", reader.get("currentWeekID") + 1);
+        reader.set("workingState", 0);
+        reader.set("nextWeek", reader.get("nextWeek") + 604800000);
+    }
+    setTimeout(weekly, 10000);
+}
+
+function insertWeeks() {
+    return new Promise((resolve, reject) => {
+        db.query(`SELECT lol_id FROM lolchang.accounts;`, async (error, accounts, fields) => {
+            if (error) return console.log(error);
+
+            const beginTime = reader.get("nextWeek") - 604800000; // 604800000 is a week
+
+            for (const account of accounts) {
+                let url = `https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-account/${account.lol_id}?api_key=${riotapi}`;
+
+                request(url, { json: true }, (error, response, summoner) => {
+                    if (error) return console.log(error);
+
+                    url = `https://kr.api.riotgames.com/lol/match/v4/matchlists/by-account/${account.lol_id}?beginTime=${beginTime}&api_key=${riotapi}`;
+                    request(url, { json: true }, (error, response, matchlists) => {
+                        if (error) return console.log(error);
+
+                        if (!matchlists.totalGames) {
+                            db.query(`INSERT INTO lolchang.weeks VALUES (${reader.get("currentWeekID")}, '${account.lol_id}', 0, ${summoner.summonerLevel}, 0);`, (error, results, fields) => {
+                                if (error) return console.log(error);
+                            });
+
+                            return;
+                        }
+
+                        let playtime = 0;
+                        for (const match of matchlists.matches) {
+                            playtime += getPlaytime(match.queue);
+                        }
+
+                        db.query(`INSERT INTO lolchang.weeks VALUES (${reader.get("currentWeekID")}, '${account.lol_id}', ${playtime}, ${summoner.summonerLevel}, ${matchlists.totalGames});`, (error, results, fields) => {
+                            if (error) return console.log(error);
+                        });
+                    });
+                });
+
+                await sleep(3000);
+            }
+            resolve();
+        });
+    });
+}
+
+function printWeeks() {
+    return new Promise((resolve, reject) => {
+        db.query(`SELECT * FROM lolchang.channels;`, async (error, results, fields) => {
+            if (error) return console.log(error);
+
+            for (const row of results) {
+                if (!client.channels.has(row.channel_id)) {
+                    db.query(`DELETE FROM lolchang.channels WHERE channel_id = ${row.channel_id}`, (error, results, fields) => {
+                        if (error) return console.log(error);
+                    });
+                    continue;
+                }
+
+                db.query(`SELECT W.*, A.nickname FROM lolchang.weeks W JOIN lolchang.includes I ON W.week_id = ${reader.get("currentWeekID")} AND I.guild_id = ${row.guild_id} AND I.lol_id = W.lol_id LEFT JOIN lolchang.accounts A ON A.lol_id = I.lol_id;`, async (error, weeks, fields) => {
+                    if (error) return console.log(error);
+
+                    if (!weeks.length) {
+                        return;
+                    }
+
+                    const rank = [];
+
+                    let playtime;
+                    let accountsNum;
+
+                    for (const w of weeks) {
+                        playtime = w.playtime;
+
+                        const subaccounts = await querySync(`SELECT W.* FROM lolchang.weeks W JOIN lolchang.subaccounts S ON W.week_id = ${reader.get("currentWeekID")} AND S.guild_id = ${row.guild_id} AND S.primary_id = '${w.lol_id}' AND W.lol_id = S.secondary_id;`);
+
+                        if (!subaccounts.length) {
+                            rank.push([w.nickname, playtime]);
+                            continue;
+                        }
+
+                        accountsNum = 0;
+                        for (const sub of subaccounts) {
+                            playtime += sub.playtime;
+                            accountsNum++;
+                        }
+                        rank.push([`${w.nickname} (부캐 ${accountsNum}개)`, playtime])
+                    }
+
+                    rank.sort((a, b) => b[1] - a[1]);
+                    client.channels.get(row.channel_id).send(stringifyRank(rank));
+                });
+            }
+        });
+    });
+}
+
+function stringifyRank(arr) {
+    const date = new Date();
+    let text = `\`\`\`ini\n[${date.getMonth() + 1}월 ${getJucha(date)}주차 롤창 랭킹]`;
+    let min;
+    for (let i = 0; i < arr.length; ++i) {
+        min = arr[i][1] / 60
+        text += `\n${i + 1}위 ${Number.isInteger(min) ? min : min.toFixed(1)}시간 -> ${arr[i][0]}`;
+    }
+    text += "```";
+
+    return text;
+}
+
+function getJucha(date) {
+    return Math.floor((date.getDate() + date.getDay() - 1) / 7) + 1;
+}
+
+function getPlaytime(queueID) {
+    switch (queueID) {
+        case 450:
+            return 19; // 칼바람
+        case 830:
+        case 840:
+            return 15; // 입문, 초급 AI
+        case 850:
+            return 22; // 중급 AI (이 값은 내 추측)
+        default:
+            return 28; // 소환사 협곡 및 기타
+    }
+}
+
+function sleep(ms) {
+    return new Promise(resolve => { setTimeout(resolve, ms) });
+}

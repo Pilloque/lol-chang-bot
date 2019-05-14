@@ -22,3 +22,13 @@ db.connect(err => {
 
 exports.mysql = mysql;
 exports.db = db;
+
+exports.querySync = function (query) {
+    return new Promise((resolve, reject) => {
+        db.query(query, (error, results, fields) => {
+            if (error) reject(error);
+
+            resolve(results);
+        });
+    });
+}
