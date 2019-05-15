@@ -143,16 +143,16 @@ module.exports = {
                     return message.reply(`${nickname}는 누군지몰르겠는거임 똑바로치셈`);
                 }
 
-                db.query(`SELECT secondary_name FROM lolchang.subaccounts WHERE primary_id = '${body.accountId}' AND guild_id = ${message.guild.id};`, (error, results, fields) => {
+                db.query(`SELECT A.nickname FROM lolchang.subaccounts S JOIN lolchang.accounts A ON S.primary_id = '${body.accountId}' AND S.guild_id = ${message.guild.id} AND A.lol_id = S.secondary_id;`, (error, results, fields) => {
                     if (error) return console.log(error);
 
                     if (!results.length) {
                         return message.reply(`부캐 조회 안됨`);
                     }
 
-                    let reply = `\`\`\`ini\n[${nickname}의 부캐 목록]`;
+                    let reply = `\`\`\`ini\n[${body.name}의 부캐 목록]`;
                     for (const account of results) {
-                        reply += `\n- ${account.secondary_name}`;
+                        reply += `\n- ${account.nickname}`;
                     }
                     reply += "```";
 
