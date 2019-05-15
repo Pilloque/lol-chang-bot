@@ -77,7 +77,7 @@ function printWeeks() {
                     continue;
                 }
 
-                db.query(`SELECT W.*, A.nickname FROM lolchang.weeks W JOIN lolchang.includes I ON W.week_id = ${reader.get("currentWeekID")} AND I.guild_id = ${row.guild_id} AND I.lol_id = W.lol_id LEFT JOIN lolchang.accounts A ON A.lol_id = I.lol_id;`, async (error, weeks, fields) => {
+                db.query(`SELECT W.*, A.nickname FROM lolchang.weeks W JOIN lolchang.includes I ON W.week_id = ${reader.get("currentWeekID")} AND I.guild_id = ${row.guild_id} AND I.lol_id = W.lol_id JOIN lolchang.accounts A ON A.lol_id = I.lol_id;`, async (error, weeks, fields) => {
                     if (error) return console.log(error);
 
                     if (!weeks.length) {
