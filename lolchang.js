@@ -1,6 +1,7 @@
 const fs = require("fs");
 const Discord = require("discord.js");
 const { prefix, token } = require("./tokens/config.json");
+const reader = require("./util/weekReader.js");
 
 const client = new Discord.Client();
 exports.client = client;
@@ -33,9 +34,13 @@ client.on("message", (message) => {
 
     if (!command) return;
 
+    if (reader.get("workingState") === 1) {
+        return message.reply("롤창 집계 중이라 몬함");
+    }
+
     //Guild only
     if (command.guildOnly && message.channel.type !== "text") {
-        return message.reply("DM에선 몬함")
+        return message.reply("DM에선 몬함");
     }
 
     //Arguments
@@ -63,7 +68,7 @@ client.on("message", (message) => {
 
         if (now < expirationTime) {
             const timeLeft = (expirationTime - now) / 1000;
-            return message.reply(`쿨이여서몼씀. ${timeLeft.toFixed(1)}초기달.`);
+            return message.reply(`쿨이여서몼씀. ${timeLeft.toFixed(1)}초 기달.`);
         }
     }
 
