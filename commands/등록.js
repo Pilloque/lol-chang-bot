@@ -29,7 +29,7 @@ module.exports = {
             if (error) return console.log(error);
 
             if (!body.id) {
-                return message.reply(`${nickname}는 누군지몰르겠는거임 똑바로치셈`);
+                return message.reply(`\`${nickname}\`는 누군지몰르겠는거임 똑바로치셈`);
             }
 
             db.query(`SELECT lol_id FROM lolchang.accounts WHERE lol_id = '${body.accountId}';`, (error, results, fields) => {
@@ -53,7 +53,7 @@ module.exports = {
 
                 db.query(`INSERT INTO lolchang.includes VALUES (${message.guild.id}, '${body.accountId}');`, (error, results, fields) => {
                     if (error) return console.log(error);
-                    message.channel.send(`\'${message.guild.name}\'에 \'${body.name}\' 등록 완료`);
+                    message.channel.send(`\`${message.guild.name}\`에 \`${body.name}\` 등록 완료`);
                 });
             });
         });

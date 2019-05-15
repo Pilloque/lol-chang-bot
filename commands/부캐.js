@@ -13,7 +13,7 @@ module.exports = {
     execute(message, args) {
         if (args[0] === "등록" || args[0] === "추가") {
             if (args.length < 3) {
-                return message.channel.send(`명령어그렇게쓰는거아닌데\n올바른 사용법: \'${prefix}등록 [본계정] [부계정]\'`);
+                return message.channel.send(`명령어그렇게쓰는거아닌데\n올바른 사용법: \`${prefix}등록 [본계정] [부계정]\``);
             }
 
             const primaryNickname = args[1];
@@ -25,7 +25,7 @@ module.exports = {
                 if (error) return console.log(error);
 
                 if (!primaryJson.accountId) {
-                    return message.reply(`${primaryNickname}는 누군지몰르겠는거임 똑바로치셈`);
+                    return message.reply(`\`${primaryNickname}\`는 누군지몰르겠는거임 똑바로치셈`);
                 }
 
                 //Check if secondary account exists
@@ -34,7 +34,7 @@ module.exports = {
                     if (error) return console.log(error);
 
                     if (!secondaryJson.accountId) {
-                        return message.reply(`${secondaryNickname}는 누군지몰르겠는거임 똑바로치셈`);
+                        return message.reply(`\`${secondaryNickname}\`는 누군지몰르겠는거임 똑바로치셈`);
                     }
 
                     //Queries
@@ -65,7 +65,7 @@ module.exports = {
 
                                 db.query(`INSERT INTO lolchang.subaccounts VALUES ('${primaryJson.accountId}', '${secondaryJson.accountId}', ${message.guild.id});`, (error, results, fields) => {
                                     if (error) return console.log(error);
-                                    message.channel.send(`\'${primaryJson.name}\'에 \'${secondaryJson.name}\' 등록 완료`);
+                                    message.channel.send(`\`${primaryJson.name}\`에 \`${secondaryJson.name}\` 등록 완료`);
                                 });
                             });
                         });
@@ -76,7 +76,7 @@ module.exports = {
 
         } else if (args[0] === "삭제" || args[0] === "제거") {
             if (args.length < 3) {
-                return message.channel.send(`명령어그렇게쓰는거아닌데\n올바른 사용법: \'${prefix}삭제 [본계정] [부계정]\'`);
+                return message.channel.send(`명령어그렇게쓰는거아닌데\n올바른 사용법: \`${prefix}삭제 [본계정] [부계정]\``);
             }
 
             const primaryNickname = args[1];
@@ -88,7 +88,7 @@ module.exports = {
                 if (error) return console.log(error);
 
                 if (!primaryJson.accountId) {
-                    return message.reply(`${primaryNickname}는 누군지몰르겠는거임 똑바로치셈`);
+                    return message.reply(`\`${primaryNickname}\`는 누군지몰르겠는거임 똑바로치셈`);
                 }
 
                 //Check if secondary account exists
@@ -97,7 +97,7 @@ module.exports = {
                     if (error) return console.log(error);
 
                     if (!secondaryJson.accountId) {
-                        return message.reply(`${secondaryNickname}는 누군지몰르겠는거임 똑바로치셈`);
+                        return message.reply(`\`${secondaryNickname}\`는 누군지몰르겠는거임 똑바로치셈`);
                     }
 
                     //Queries
@@ -120,7 +120,7 @@ module.exports = {
 
                             db.query(`DELETE FROM lolchang.subaccounts WHERE primary_id = '${primaryJson.accountId}' AND secondary_id = '${secondaryJson.accountId}' AND guild_id = ${message.guild.id};`, (error, results, fields) => {
                                 if (error) return console.log(error);
-                                message.channel.send(`\'${tempPrimaryNickname}\'에서 \'${tempSecondaryNickname}\' 삭제 완료`);
+                                message.channel.send(`\`${tempPrimaryNickname}\`에서 \`${tempSecondaryNickname}\` 삭제 완료`);
                             });
                         });
                     });
@@ -130,7 +130,7 @@ module.exports = {
 
         } else if (args[0] === "조회" || args[0] === "목록") {
             if (args.length < 2) {
-                return message.channel.send(`명령어그렇게쓰는거아닌데\n올바른 사용법: \'${prefix}목록 [본계정]\'`);
+                return message.channel.send(`명령어그렇게쓰는거아닌데\n올바른 사용법: \`${prefix}목록 [본계정]\``);
             }
 
             const nickname = args[1];
@@ -140,7 +140,7 @@ module.exports = {
                 if (error) return console.log(error);
 
                 if (!body.id) {
-                    return message.reply(`${nickname}는 누군지몰르겠는거임 똑바로치셈`);
+                    return message.reply(`\`${nickname}\`는 누군지몰르겠는거임 똑바로치셈`);
                 }
 
                 db.query(`SELECT A.nickname FROM lolchang.subaccounts S JOIN lolchang.accounts A ON S.primary_id = '${body.accountId}' AND S.guild_id = ${message.guild.id} AND A.lol_id = S.secondary_id;`, (error, results, fields) => {

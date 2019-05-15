@@ -17,7 +17,7 @@ module.exports = {
             if (error) return console.log(error);
 
             if (!body.id) {
-                return message.reply(`${nickname}는 누군지몰르겠는거임 똑바로치셈`);
+                return message.reply(`\`${nickname}\`는 누군지몰르겠는거임 똑바로치셈`);
             }
 
             db.query(`SELECT lol_id FROM lolchang.includes WHERE lol_id = '${body.accountId}' AND guild_id = ${message.guild.id};`, (error, results, fields) => {
@@ -31,7 +31,7 @@ module.exports = {
 
                 db.query(`DELETE FROM lolchang.includes WHERE lol_id = '${body.accountId}' AND guild_id = ${message.guild.id};`, (error, results, fields) => {
                     if (error) return console.log(error);
-                    message.channel.send(`\'${message.guild.name}\'에서 \'${tempNickname}\' 삭제 완료`);
+                    message.channel.send(`\`${message.guild.name}\`에서 \`${tempNickname}\` 삭제 완료`);
                 });
             });
         });

@@ -43,7 +43,7 @@ client.on("message", (message) => {
         let reply = `명령어그렇게쓰는거아닌데`;
 
         if (command.usage) {
-            reply += `\n올바른 사용법: \'${prefix}${commandName} ${command.usage}\'`;
+            reply += `\n올바른 사용법: \`${prefix}${commandName} ${command.usage}\``;
         }
 
         return message.channel.send(reply);
