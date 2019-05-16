@@ -15,8 +15,8 @@ module.exports = async function weekly() {
         await printWeeks();
 
         reader.set("currentWeekID", reader.get("currentWeekID") + 1);
-        reader.set("workingState", 0);
         reader.set("nextWeek", reader.get("nextWeek") + 604800000);
+        reader.set("workingState", 0);
     }
     setTimeout(weekly, 10000);
 }
@@ -117,7 +117,7 @@ function printWeeks() {
 
 function stringifyRank(arr) {
     const date = new Date();
-    let text = `\`\`\`ini\n[${date.getMonth() + 1}월 ${getJucha(date)}주차 롤창 랭킹]`;
+    let text = `\`\`\`ini\n[${date.getMonth() + 1}월 ${getJucha(date)}주차 롤창 랭킹]\`\`\`\`\`\``;
     let min;
     for (let i = 0; i < arr.length; ++i) {
         min = arr[i][1] / 60

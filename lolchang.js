@@ -68,7 +68,7 @@ client.on("message", (message) => {
 
         if (now < expirationTime) {
             const timeLeft = (expirationTime - now) / 1000;
-            return message.reply(`쿨이여서몼씀. ${timeLeft.toFixed(1)}초 기달.`);
+            return message.reply(`쿨이여서몼씀. ${timeLeft.toFixed(1)}초 기달`);
         }
     }
 

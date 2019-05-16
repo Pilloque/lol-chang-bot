@@ -4,7 +4,7 @@ const request = require("request");
 
 module.exports = {
     name: "부캐",
-    description: "부계정을 등록하거나 삭제합니다. (닉네임에 띄어쓰기가 있다면 붙여서 써주세요)",
+    description: "부계정을 등록하거나 삭제합니다. (닉네임에 띄어쓰기는 생략)",
     aliases: ["부계", "부계정"],
     usage: "[등록/삭제/조회] [본계정] {부계정}",
     cooldown: 2,

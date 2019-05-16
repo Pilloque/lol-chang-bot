@@ -4,7 +4,7 @@ const request = require("request");
 
 module.exports = {
     name: "삭제",
-    description: "소환사를 롤창봇에 삭제합니다.",
+    description: "소환사를 롤창봇에서 등록 해제합니다.",
     aliases: ["제거", "해제"],
     usage: "[소환사 이름]",
     cooldown: 2,
