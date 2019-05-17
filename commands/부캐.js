@@ -28,51 +28,58 @@ module.exports = {
                     return message.reply(`\`${primaryNickname}\`는 누군지몰르겠는거임 똑바로치셈`);
                 }
 
-                //Check if secondary account exists
-                url = `https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/${encodeURIComponent(secondaryNickname)}?api_key=${riotapi}`
-                request(url, { json: true }, (error, response, secondaryJson) => {
+                db.query(`SELECT COUNT(*) FROM lolchang.subaccounts WHERE primary_id = '${primaryJson.accountId}' AND guild_id = ${message.guild.id};`, (error, count, fields) => {
                     if (error) return console.log(error);
-
-                    if (!secondaryJson.accountId) {
-                        return message.reply(`\`${secondaryNickname}\`는 누군지몰르겠는거임 똑바로치셈`);
+                    console.log(count[0]["COUNT(*)"]);
+                    if (count[0]["COUNT(*)"] >= 5) {
+                        return message.reply(`\`${primaryJson.name}\`의 부계정 등록 제한 초과`);
                     }
 
-                    //Queries
-                    db.query(`SELECT lol_id FROM lolchang.includes WHERE lol_id = '${primaryJson.accountId}' AND guild_id = ${message.guild.id};`, (error, results, fields) => {
+                    //Check if secondary account exists
+                    url = `https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/${encodeURIComponent(secondaryNickname)}?api_key=${riotapi}`
+                    request(url, { json: true }, (error, response, secondaryJson) => {
                         if (error) return console.log(error);
 
-                        if (!results.length) {
-                            return message.reply(`본캐등록부터해야함 띵킹좀하셈`);
+                        if (!secondaryJson.accountId) {
+                            return message.reply(`\`${secondaryNickname}\`는 누군지몰르겠는거임 똑바로치셈`);
                         }
 
-                        db.query(`SELECT primary_id FROM lolchang.subaccounts WHERE primary_id = '${primaryJson.accountId}' AND secondary_id = '${secondaryJson.accountId}' AND guild_id = ${message.guild.id};`, (error, results, fields) => {
+                        //Queries
+                        db.query(`SELECT lol_id FROM lolchang.includes WHERE lol_id = '${primaryJson.accountId}' AND guild_id = ${message.guild.id};`, (error, results, fields) => {
                             if (error) return console.log(error);
 
-                            if (results.length) {
-                                return message.reply(`이미등록댄거임 띵킹좀하셈`);
+                            if (!results.length) {
+                                return message.reply(`본캐등록부터해야함 띵킹좀하셈`);
                             }
 
-                            db.query(`SELECT lol_id FROM lolchang.accounts WHERE lol_id = '${secondaryJson.accountId}';`, (error, results, fields) => {
+                            db.query(`SELECT primary_id FROM lolchang.subaccounts WHERE primary_id = '${primaryJson.accountId}' AND secondary_id = '${secondaryJson.accountId}' AND guild_id = ${message.guild.id};`, (error, results, fields) => {
                                 if (error) return console.log(error);
 
-                                if (!results.length) {
-                                    db.query(`INSERT INTO lolchang.accounts VALUES ('${secondaryJson.accountId}', '${secondaryJson.name}', ${secondaryJson.summonerLevel});`, (error, results, fields) => {
-                                        if (error) return console.log(error);
-
-                                        console.log(`소환사 \'${secondaryJson.name}\' 추가됨`);
-                                    });
+                                if (results.length) {
+                                    return message.reply(`이미등록댄거임 띵킹좀하셈`);
                                 }
 
-                                db.query(`INSERT INTO lolchang.subaccounts VALUES ('${primaryJson.accountId}', '${secondaryJson.accountId}', ${message.guild.id});`, (error, results, fields) => {
+                                db.query(`SELECT lol_id FROM lolchang.accounts WHERE lol_id = '${secondaryJson.accountId}';`, (error, results, fields) => {
                                     if (error) return console.log(error);
-                                    message.channel.send(`\`${primaryJson.name}\`에 \`${secondaryJson.name}\` 등록 완료`);
+
+                                    if (!results.length) {
+                                        db.query(`INSERT INTO lolchang.accounts VALUES ('${secondaryJson.accountId}', '${secondaryJson.name}', ${secondaryJson.summonerLevel});`, (error, results, fields) => {
+                                            if (error) return console.log(error);
+
+                                            console.log(`소환사 \'${secondaryJson.name}\' 추가됨`);
+                                        });
+                                    }
+
+                                    db.query(`INSERT INTO lolchang.subaccounts VALUES ('${primaryJson.accountId}', '${secondaryJson.accountId}', ${message.guild.id});`, (error, results, fields) => {
+                                        if (error) return console.log(error);
+                                        message.channel.send(`\`${primaryJson.name}\`에 \`${secondaryJson.name}\` 등록 완료`);
+                                    });
                                 });
                             });
                         });
                     });
                 });
             });
-
 
         } else if (args[0] === "삭제" || args[0] === "제거") {
             if (args.length < 3) {
