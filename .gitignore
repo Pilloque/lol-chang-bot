@@ -1,4 +1,5 @@
 node_modules/
 tokens/
 week.json
+test.js
 *backup*
