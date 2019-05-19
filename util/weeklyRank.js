@@ -13,6 +13,7 @@ module.exports = async function weekly() {
         await insertWeeks();
         console.log(`데이터 삽입 완료 (${((Date.now() - startTime) / 1000).toFixed(2)}초)`);
         await printWeeks();
+        console.log("데이터 출력 완료");
 
         reader.set("currentWeekID", reader.get("currentWeekID") + 1);
         reader.set("nextWeek", reader.get("nextWeek") + 604800000);
@@ -86,11 +87,8 @@ function printWeeks() {
 
                     const rank = [];
 
-                    let playtime;
-                    let accountsNum;
-
                     for (const w of weeks) {
-                        playtime = w.playtime;
+                        let playtime = w.playtime;
 
                         const subaccounts = await querySync(`SELECT W.* FROM lolchang.weeks W JOIN lolchang.subaccounts S ON W.week_id = ${reader.get("currentWeekID")} AND S.guild_id = ${row.guild_id} AND S.primary_id = '${w.lol_id}' AND W.lol_id = S.secondary_id;`);
 
@@ -99,7 +97,7 @@ function printWeeks() {
                             continue;
                         }
 
-                        accountsNum = 0;
+                        let accountsNum = 0;
                         for (const sub of subaccounts) {
                             playtime += sub.playtime;
                             accountsNum++;
@@ -109,6 +107,7 @@ function printWeeks() {
 
                     rank.sort((a, b) => b[1] - a[1]);
                     client.channels.get(row.channel_id).send(stringifyRank(rank));
+                    resolve();
                 });
             }
         });
