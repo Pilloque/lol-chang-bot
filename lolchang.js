@@ -1,7 +1,8 @@
 const fs = require("fs");
 const Discord = require("discord.js");
-const { prefix, token } = require("./tokens/config.json");
+const { globalPrefix, token } = require("./tokens/config.json");
 const reader = require("./util/weekReader.js");
+const prefixManager = require("./util/prefixManager.js");
 
 const client = new Discord.Client();
 exports.client = client;
@@ -18,14 +19,24 @@ for (const file of commandFiles) {
 
 
 client.once("ready", () => {
+    client.user.setPresence({ game: { name: `${globalPrefix}명령어 | ${globalPrefix}prefix` }, });
+    prefixManager.updatePrefix();
     console.log("Ready!");
     //require("./util/test.js")();
     require("./util/weeklyRank.js")();
 });
 
 
-client.on("message", (message) => {
-    if (!message.content.startsWith(prefix) || message.author.bot) return;
+client.on("message", async message => {
+    if (message.author.bot) return;
+
+    let prefix;
+    if (message.content.startsWith(globalPrefix)) {
+        prefix = globalPrefix;
+    } else {
+        prefix = prefixManager.getPrefix(message.guild.id);
+        if (!prefix || !message.content.startsWith(prefix)) return;
+    }
 
     const args = message.content.slice(prefix.length).split(/ +/);
     const commandName = args.shift().toLowerCase();

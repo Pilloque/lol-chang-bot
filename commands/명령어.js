@@ -1,4 +1,5 @@
-const { prefix } = require("../tokens/config.json");
+const { globalPrefix } = require("../tokens/config.json");
+const { getPrefix } = require("../util/prefixManager.js");
 
 module.exports = {
     name: "명령어",
@@ -7,8 +8,7 @@ module.exports = {
     usage: "{명령어 이름}",
     cooldown: 5,
     execute(message, args) {
-        const data = [];
-        const { commands } = message.client;
+        const prefix = getPrefix(message.guild.id) || globalPrefix;
 
         if (!args.length) {
             const exampleEmbed = {
@@ -28,7 +28,7 @@ module.exports = {
                     },
                     {
                         name: ':green_book: 기타',
-                        value: `\`${prefix}명령어\`\n\`${prefix}명령어 [명령어 이름]\`\n\`${prefix}핑\``,
+                        value: `\`${prefix}명령어\`\n\`${prefix}명령어 [명령어 이름]\`\n\`${prefix}핑\`\n\`${prefix}prefix\``,
                     },
                 ],
             };
@@ -37,7 +37,9 @@ module.exports = {
         }
 
         const name = args[0].toLowerCase();
+        const { commands } = message.client;
         const command = commands.get(name) || commands.find(c => c.aliases && c.aliases.includes(name));
+        const data = [];
 
         if (!command) {
             return message.reply("that's not a vaild command!");
@@ -47,7 +49,7 @@ module.exports = {
 
         if (command.aliases) data.push(`**같은 명령어 :** \`${command.aliases.join('\`, \`')}\``);
         if (command.description) data.push(`**설명 :** \`${command.description}\``);
-        if (command.usage) data.push(`**사용법 :** \`${prefix}${command.name} ${command.usage}\``);
+        if (command.usage) data.push(`**사용법 :** \`${globalPrefix}${command.name} ${command.usage}\``);
 
         data.push(`**쿨타임 :** \`${command.cooldown || 2}초\``);
 

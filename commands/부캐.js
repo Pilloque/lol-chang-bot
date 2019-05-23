@@ -1,5 +1,5 @@
 const { db } = require("../util/sql.js");
-const { prefix, riotapi } = require("../tokens/config.json");
+const { globalPrefix, riotapi } = require("../tokens/config.json");
 const request = require("request");
 
 module.exports = {
@@ -13,7 +13,7 @@ module.exports = {
     execute(message, args) {
         if (args[0] === "등록" || args[0] === "추가") {
             if (args.length < 3) {
-                return message.channel.send(`명령어그렇게쓰는거아닌데\n올바른 사용법: \`${prefix}등록 [본계정] [부계정]\``);
+                return message.channel.send(`명령어그렇게쓰는거아닌데\n올바른 사용법: \`${globalPrefix}등록 [본계정] [부계정]\``);
             }
 
             const primaryNickname = args[1];
@@ -83,7 +83,7 @@ module.exports = {
 
         } else if (args[0] === "삭제" || args[0] === "제거") {
             if (args.length < 3) {
-                return message.channel.send(`명령어그렇게쓰는거아닌데\n올바른 사용법: \`${prefix}삭제 [본계정] [부계정]\``);
+                return message.channel.send(`명령어그렇게쓰는거아닌데\n올바른 사용법: \`${globalPrefix}삭제 [본계정] [부계정]\``);
             }
 
             const primaryNickname = args[1];
@@ -137,7 +137,7 @@ module.exports = {
 
         } else if (args[0] === "조회" || args[0] === "목록") {
             if (args.length < 2) {
-                return message.channel.send(`명령어그렇게쓰는거아닌데\n올바른 사용법: \`${prefix}목록 [본계정]\``);
+                return message.channel.send(`명령어그렇게쓰는거아닌데\n올바른 사용법: \`${globalPrefix}목록 [본계정]\``);
             }
 
             const nickname = args[1];

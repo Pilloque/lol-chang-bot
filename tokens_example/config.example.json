@@ -1,5 +1,5 @@
 {
-    "prefix": "prefix goes here",
+    "globalPrefix": "globalPrefix goes here",
     "token": "bot token goes here",
     "riotapi": "riot api key goes here"
 }
