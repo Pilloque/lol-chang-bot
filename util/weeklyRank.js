@@ -2,7 +2,6 @@ const { db, querySync } = require("./sql.js");
 const { riotapi } = require("../tokens/config.json");
 const { client } = require("../lolchang.js");
 const reader = require("./weekReader.js");
-const request = require("request");
 const requestSync = require("./requestSync.js");
 
 module.exports = async function weekly() {
@@ -51,7 +50,7 @@ function insertWeeks() {
 
                 await sleep(3000);
             }
-            
+
             resolve();
         });
     });
