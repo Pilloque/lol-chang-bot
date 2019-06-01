@@ -3,6 +3,7 @@ const { riotapi } = require("../tokens/config.json");
 const { client } = require("../lolchang.js");
 const reader = require("./weekReader.js");
 const request = require("request");
+const requestSync = require("./requestSync.js");
 
 module.exports = async function weekly() {
     if (reader.get("workingState") === 0 && Date.now() > reader.get("nextWeek")) {
@@ -31,35 +32,26 @@ function insertWeeks() {
 
             for (const account of accounts) {
                 let url = `https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-account/${account.lol_id}?api_key=${riotapi}`;
+                const summoner = await requestSync(url);
 
-                request(url, { json: true }, (error, response, summoner) => {
-                    if (error) return console.log(error);
+                url = `https://kr.api.riotgames.com/lol/match/v4/matchlists/by-account/${account.lol_id}?beginTime=${beginTime}&api_key=${riotapi}`;
+                const matchlists = await requestSync(url);
 
-                    url = `https://kr.api.riotgames.com/lol/match/v4/matchlists/by-account/${account.lol_id}?beginTime=${beginTime}&api_key=${riotapi}`;
-                    request(url, { json: true }, (error, response, matchlists) => {
-                        if (error) return console.log(error);
+                if (!matchlists.totalGames) {
+                    await querySync(`INSERT INTO lolchang.weeks VALUES (${reader.get("currentWeekID")}, '${account.lol_id}', 0, ${summoner.summonerLevel}, 0);`);
+                    continue;
+                }
 
-                        if (!matchlists.totalGames) {
-                            db.query(`INSERT INTO lolchang.weeks VALUES (${reader.get("currentWeekID")}, '${account.lol_id}', 0, ${summoner.summonerLevel}, 0);`, (error, results, fields) => {
-                                if (error) return console.log(error);
-                            });
+                let playtime = 0;
+                for (const match of matchlists.matches) {
+                    playtime += getPlaytime(match.queue);
+                }
 
-                            return;
-                        }
-
-                        let playtime = 0;
-                        for (const match of matchlists.matches) {
-                            playtime += getPlaytime(match.queue);
-                        }
-
-                        db.query(`INSERT INTO lolchang.weeks VALUES (${reader.get("currentWeekID")}, '${account.lol_id}', ${playtime}, ${summoner.summonerLevel}, ${matchlists.totalGames});`, (error, results, fields) => {
-                            if (error) return console.log(error);
-                        });
-                    });
-                });
+                await querySync(`INSERT INTO lolchang.weeks VALUES (${reader.get("currentWeekID")}, '${account.lol_id}', ${playtime}, ${summoner.summonerLevel}, ${matchlists.totalGames});`);
 
                 await sleep(3000);
             }
+            
             resolve();
         });
     });
