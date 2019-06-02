@@ -98,9 +98,9 @@ function printWeeks() {
 
                     rank.sort((a, b) => b[1] - a[1]);
                     client.channels.get(row.channel_id).send(stringifyRank(rank));
-                    resolve();
                 });
             }
+            resolve();
         });
     });
 }
