@@ -106,7 +106,7 @@ function printWeeks() {
 }
 
 function stringifyRank(arr) {
-    const date = new Date();
+    const date = new Date(reader.get("nextWeek"));
     let text = `\`\`\`ini\n[${date.getMonth() + 1}월 ${getJucha(date)}주차 롤창 랭킹]\`\`\`\`\`\``;
     let min;
     for (let i = 0; i < arr.length; ++i) {
@@ -119,7 +119,11 @@ function stringifyRank(arr) {
 }
 
 function getJucha(date) {
-    return Math.floor((date.getDate() + date.getDay() - 1) / 7) + 1;
+    return Math.floor((date.getDate() - getMondayFirstDay(date.getDay()) + 5) / 7) + 1;
+}
+
+function getMondayFirstDay(day) {
+    return (day + 6) % 7;
 }
 
 function getPlaytime(queueID) {
