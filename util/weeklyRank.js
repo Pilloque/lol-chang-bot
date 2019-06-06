@@ -33,6 +33,11 @@ function insertWeeks() {
                 let url = `https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-account/${account.lol_id}?api_key=${riotapi}`;
                 const summoner = await requestSync(url);
 
+                if (account.nickname !== summoner.name) {
+                    await querySync(`UPDATE lolchang.accounts SET nickname = '${summoner.name}' WHERE lol_id = '${account.lol_id}'`);
+                    console.log(`${summoner.name}으로 닉네임 변경됨. (디버그용이므로 나중에 삭제)`);
+                }
+
                 url = `https://kr.api.riotgames.com/lol/match/v4/matchlists/by-account/${account.lol_id}?beginTime=${beginTime}&api_key=${riotapi}`;
                 const matchlists = await requestSync(url);
 
