@@ -24,7 +24,7 @@ module.exports = async function weekly() {
 
 function insertWeeks() {
     return new Promise((resolve, reject) => {
-        db.query(`SELECT lol_id FROM lolchang.accounts;`, async (error, accounts, fields) => {
+        db.query(`SELECT * FROM lolchang.accounts;`, async (error, accounts, fields) => {
             if (error) return console.log(error);
 
             const beginTime = reader.get("nextWeek") - 604800000; // 604800000 is a week
@@ -33,9 +33,9 @@ function insertWeeks() {
                 let url = `https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-account/${account.lol_id}?api_key=${riotapi}`;
                 const summoner = await requestSync(url);
 
+                //Change nickname if nickname change
                 if (account.nickname !== summoner.name) {
                     await querySync(`UPDATE lolchang.accounts SET nickname = '${summoner.name}' WHERE lol_id = '${account.lol_id}'`);
-                    console.log(`${summoner.name}으로 닉네임 변경됨. (디버그용이므로 나중에 삭제)`);
                 }
 
                 url = `https://kr.api.riotgames.com/lol/match/v4/matchlists/by-account/${account.lol_id}?beginTime=${beginTime}&api_key=${riotapi}`;
@@ -63,6 +63,9 @@ function insertWeeks() {
 
 function printWeeks() {
     return new Promise((resolve, reject) => {
+        const currentWeekID = reader.get("currentWeekID");
+        const currentTime = reader.get("nextWeek");
+
         db.query(`SELECT * FROM lolchang.channels;`, async (error, results, fields) => {
             if (error) return console.log(error);
 
@@ -74,7 +77,7 @@ function printWeeks() {
                     continue;
                 }
 
-                db.query(`SELECT W.*, A.nickname FROM lolchang.weeks W JOIN lolchang.includes I ON W.week_id = ${reader.get("currentWeekID")} AND I.guild_id = ${row.guild_id} AND I.lol_id = W.lol_id JOIN lolchang.accounts A ON A.lol_id = I.lol_id;`, async (error, weeks, fields) => {
+                db.query(`SELECT W.*, A.nickname FROM lolchang.weeks W JOIN lolchang.includes I ON W.week_id = ${currentWeekID} AND I.guild_id = ${row.guild_id} AND I.lol_id = W.lol_id JOIN lolchang.accounts A ON A.lol_id = I.lol_id;`, async (error, weeks, fields) => {
                     if (error) return console.log(error);
 
                     if (!weeks.length) {
@@ -86,7 +89,7 @@ function printWeeks() {
                     for (const w of weeks) {
                         let playtime = w.playtime;
 
-                        const subaccounts = await querySync(`SELECT W.* FROM lolchang.weeks W JOIN lolchang.subaccounts S ON W.week_id = ${reader.get("currentWeekID")} AND S.guild_id = ${row.guild_id} AND S.primary_id = '${w.lol_id}' AND W.lol_id = S.secondary_id;`);
+                        const subaccounts = await querySync(`SELECT W.* FROM lolchang.weeks W JOIN lolchang.subaccounts S ON W.week_id = ${currentWeekID} AND S.guild_id = ${row.guild_id} AND S.primary_id = '${w.lol_id}' AND W.lol_id = S.secondary_id;`);
 
                         if (!subaccounts.length) {
                             rank.push([w.nickname, playtime]);
@@ -102,7 +105,7 @@ function printWeeks() {
                     }
 
                     rank.sort((a, b) => b[1] - a[1]);
-                    client.channels.get(row.channel_id).send(stringifyRank(rank));
+                    client.channels.get(row.channel_id).send(stringifyRank(rank, currentTime));
                 });
             }
             resolve();
@@ -110,8 +113,8 @@ function printWeeks() {
     });
 }
 
-function stringifyRank(arr) {
-    const date = new Date(reader.get("nextWeek"));
+function stringifyRank(arr, time) {
+    const date = new Date(time);
     let text = `\`\`\`ini\n[${date.getMonth() + 1}월 ${getJucha(date)}주차 롤창 랭킹]\`\`\`\`\`\``;
     let min;
     for (let i = 0; i < arr.length; ++i) {
@@ -141,7 +144,7 @@ function getPlaytime(queueID) {
         case 850:
             return 22; // 중급 AI (이 값은 내 추측)
         default:
-            return 28; // 소환사 협곡 및 기타
+            return 27; // 소환사 협곡 및 기타
     }
 }
 
