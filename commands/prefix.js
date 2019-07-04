@@ -23,7 +23,7 @@ module.exports = {
         });
 
         if (getByte(args[0]) > 14) {
-            message.reply("바이트 제한 초과")
+            message.reply("바이트 제한 초과");
         }
 
         db.query(`SELECT * FROM lolchang.prefixes WHERE guild_id = ${message.guild.id};`, (error, results, fields) => {

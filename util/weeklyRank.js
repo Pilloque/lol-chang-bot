@@ -20,7 +20,7 @@ module.exports = async function weekly() {
         reader.set("workingState", 0);
     }
     setTimeout(weekly, 10000);
-}
+};
 
 function insertWeeks() {
     return new Promise((resolve, reject) => {
@@ -101,7 +101,7 @@ function printWeeks() {
                             playtime += sub.playtime;
                             accountsNum++;
                         }
-                        rank.push([`${w.nickname} (부캐 ${accountsNum}개)`, playtime])
+                        rank.push([`${w.nickname} (부캐 ${accountsNum}개)`, playtime]);
                     }
 
                     rank.sort((a, b) => b[1] - a[1]);
@@ -118,7 +118,7 @@ function stringifyRank(arr, time) {
     let text = `\`\`\`ini\n[${date.getMonth() + 1}월 ${getJucha(date)}주차 롤창 랭킹]\`\`\`\`\`\``;
     let min;
     for (let i = 0; i < arr.length; ++i) {
-        min = arr[i][1] / 60
+        min = arr[i][1] / 60;
         text += `\n${i + 1}위 ${Number.isInteger(min) ? min : min.toFixed(1)}시간 -> ${arr[i][0]}`;
     }
     text += "```";
@@ -136,18 +136,20 @@ function getMondayFirstDay(day) {
 
 function getPlaytime(queueID) {
     switch (queueID) {
-        case 450:
-            return 19; // 칼바람
-        case 830:
-        case 840:
-            return 15; // 입문, 초급 AI
-        case 850:
-            return 22; // 중급 AI (이 값은 내 추측)
-        default:
-            return 27; // 소환사 협곡 및 기타
+    case 420:
+        return 28; // 소환사 협곡 솔로 랭크
+    case 450:
+        return 19; // 칼바람
+    case 830:
+    case 840:
+        return 15; // 입문, 초급 AI
+    case 850:
+        return 22; // 중급 AI (이 값은 내 추측)
+    default:
+        return 27; // 소환사 협곡 및 기타
     }
 }
 
 function sleep(ms) {
-    return new Promise(resolve => { setTimeout(resolve, ms) });
+    return new Promise(resolve => { setTimeout(resolve, ms); });
 }

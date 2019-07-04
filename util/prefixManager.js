@@ -5,7 +5,7 @@ const prefixes = new Discord.Collection();
 
 exports.getPrefix = function (guildID) {
     return prefixes.get(guildID) || undefined;
-}
+};
 
 exports.updatePrefix = async function () {
     const results = await querySync(`SELECT * FROM lolchang.prefixes;`);
@@ -14,4 +14,4 @@ exports.updatePrefix = async function () {
     for (const r of results) {
         prefixes.set(r.guild_id, r.prefix);
     }
-}
+};

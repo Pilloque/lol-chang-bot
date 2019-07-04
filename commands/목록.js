@@ -17,7 +17,7 @@ module.exports = {
             let reply = `\`\`\`ini\n[${message.guild.name}에 등록된 소환사 목록]`;
             for (const account of results) {
                 reply += `\n- ${account.nickname}`;
-                subaccounts = await querySync(`SELECT * FROM lolchang.subaccounts WHERE primary_id = '${account.lol_id}' AND guild_id = ${message.guild.id}`);
+                const subaccounts = await querySync(`SELECT * FROM lolchang.subaccounts WHERE primary_id = '${account.lol_id}' AND guild_id = ${message.guild.id}`);
                 if (subaccounts.length) {
                     reply += ` (부캐 ${subaccounts.length}개)`;
                 }

@@ -23,7 +23,7 @@ module.exports = {
             }
         });
 
-        includedCount = (await querySync(`SELECT COUNT(*) FROM lolchang.includes WHERE guild_id = ${message.guild.id};`))[0]["COUNT(*)"];
+        const includedCount = (await querySync(`SELECT COUNT(*) FROM lolchang.includes WHERE guild_id = ${message.guild.id};`))[0]["COUNT(*)"];
         if (includedCount >= 64) {
             return message.reply(`소환사 등록 제한 초과`);
         }
@@ -39,7 +39,7 @@ module.exports = {
 
             const accountCheck = await querySync(`SELECT lol_id FROM lolchang.accounts WHERE lol_id = '${body.accountId}';`);
             if (!accountCheck.length) {
-                await querySync(`INSERT INTO lolchang.accounts VALUES ('${body.accountId}', '${body.name}', ${body.summonerLevel});`)
+                await querySync(`INSERT INTO lolchang.accounts VALUES ('${body.accountId}', '${body.name}', ${body.summonerLevel});`);
                 console.log(`소환사 \'${body.name}\' 추가됨`);
             }
 

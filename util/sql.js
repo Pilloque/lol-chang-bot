@@ -1,22 +1,22 @@
-const mysql = require("mysql")
+const mysql = require("mysql");
 const dblogin = require("../tokens/dblogin.json");
 
 const db = mysql.createConnection({
-	host: dblogin.host,
-	user: dblogin.user,
-	password: dblogin.password,
-	database: dblogin.database,
-	supportBigNumbers: true,
-	bigNumberStrings: true,
+    host: dblogin.host,
+    user: dblogin.user,
+    password: dblogin.password,
+    database: dblogin.database,
+    supportBigNumbers: true,
+    bigNumberStrings: true,
 });
 
 db.connect(err => {
-	if (err) {
-	  console.error('error connecting: ' + err.stack);
-	  return;
-	}
+    if (err) {
+        console.error('error connecting: ' + err.stack);
+        return;
+    }
 
-	console.log('connected as id ' + db.threadId);
+    console.log('connected as id ' + db.threadId);
 });
 
 
@@ -31,4 +31,4 @@ exports.querySync = function (query) {
             resolve(results);
         });
     });
-}
+};

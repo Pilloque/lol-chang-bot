@@ -20,7 +20,7 @@ module.exports = {
             const secondaryNickname = args[2];
 
             //Check if primary account exists
-            let url = `https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/${encodeURIComponent(primaryNickname)}?api_key=${riotapi}`
+            let url = `https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/${encodeURIComponent(primaryNickname)}?api_key=${riotapi}`;
             request(url, { json: true }, (error, response, primaryJson) => {
                 if (error) return console.log(error);
 
@@ -36,7 +36,7 @@ module.exports = {
                     }
 
                     //Check if secondary account exists
-                    url = `https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/${encodeURIComponent(secondaryNickname)}?api_key=${riotapi}`
+                    url = `https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/${encodeURIComponent(secondaryNickname)}?api_key=${riotapi}`;
                     request(url, { json: true }, (error, response, secondaryJson) => {
                         if (error) return console.log(error);
 
@@ -90,7 +90,7 @@ module.exports = {
             const secondaryNickname = args[2];
 
             //Check if primary account exists
-            let url = `https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/${encodeURIComponent(primaryNickname)}?api_key=${riotapi}`
+            let url = `https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/${encodeURIComponent(primaryNickname)}?api_key=${riotapi}`;
             request(url, { json: true }, (error, response, primaryJson) => {
                 if (error) return console.log(error);
 
@@ -99,7 +99,7 @@ module.exports = {
                 }
 
                 //Check if secondary account exists
-                url = `https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/${encodeURIComponent(secondaryNickname)}?api_key=${riotapi}`
+                url = `https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/${encodeURIComponent(secondaryNickname)}?api_key=${riotapi}`;
                 request(url, { json: true }, (error, response, secondaryJson) => {
                     if (error) return console.log(error);
 
@@ -142,7 +142,7 @@ module.exports = {
 
             const nickname = args[1];
 
-            let url = `https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/${encodeURIComponent(nickname)}?api_key=${riotapi}`
+            let url = `https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/${encodeURIComponent(nickname)}?api_key=${riotapi}`;
             request(url, { json: true }, (error, response, body) => {
                 if (error) return console.log(error);
 
